@@ -7,6 +7,11 @@ This extension is made for the [HydroPlatform repository](https://github.com/Sie
 When editing a .yaml or .yml file, a pop-up window with documentation will open when hovering over a key. For instance, when hovering over `button`, the extension will open the documentation for the button in a pop-up window.
 ![hover feature image](./example.png)
 
+## How to use
+The docs of a component should be saved as a markdown file in the following location: `translation/{target}/docs/{component_name}.md`. The target should always be specified in the yaml file.
+
+The docs of a button with target flutter should be saved at the location `translation/flutter/docs/button.md`.
+
 ## How to install
 
 1. Download the extension through this [link](https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/raw/refs/heads/master/appgenerator-docs-0.0.1.vsix).
