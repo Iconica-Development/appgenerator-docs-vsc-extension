@@ -4,9 +4,15 @@ This extension is made for the [HydroPlatform repository](https://github.com/Sie
 
 ## Features
 
+### Component documentation
 When editing a .yaml or .yml file, a pop-up window with documentation will open when hovering over a key. For instance, when hovering over `button`, the extension will open the documentation for the button in a pop-up window.
 <br/>
-<img src="https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/blob/master/assets/readme/example.png?raw=true" alt="drawing" width="400"/>
+<img src="https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/blob/master/assets/readme/docs_example.png?raw=true" alt="drawing" width="400"/>
+
+### Auto suggest component variables
+When editing the yaml file, this extension will suggest / autocomplete variables for components:
+<br/>
+<img src="https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/blob/master/assets/readme/autofill_example.png?raw=true" alt="drawing" width="400"/>
 
 ## How to use
 The docs of a component should be saved as a markdown file in the following location: `translation/{target}/docs/{component_name}.md`. The target should always be specified in the yaml file.
