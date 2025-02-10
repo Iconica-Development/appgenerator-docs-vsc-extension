@@ -1,26 +1,48 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import * as fs from "fs";
+import * as path from "path";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	const hoverProvider = vscode.languages.registerHoverProvider("yaml", {
+		async provideHover(document, position, token) {
+			const text = document.getText();
+			const targetMatch = text.match(/target:\s*['"]?([^'"\n]+)['"]?/);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "appgenerator-docs" is now active!');
+			if (!targetMatch) {
+				return;
+			}
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('appgenerator-docs.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from AppgeneratorDocs!');
+			const target = targetMatch[1]; // Extract target value (e.g., 'react')
+
+			// Get the hovered word (e.g., "button", "list", etc.)
+			const range = document.getWordRangeAtPosition(position, /\b[a-zA-Z_-]+(?=\s*:)/);
+			if (!range) {
+				return;
+			}
+			const word = document.getText(range);
+
+			// Resolve the documentation path from the workspace root
+			const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+			if (!workspaceFolder) {
+				return;
+			}
+
+			const docsPath = path.join(workspaceFolder, "translation", target, "docs", `${word}.md`);
+
+			if (fs.existsSync(docsPath)) {
+				const markdownContent = fs.readFileSync(docsPath, "utf-8");
+				const markdown = new vscode.MarkdownString(markdownContent);
+				markdown.isTrusted = true;
+				return new vscode.Hover(markdown);
+			} else {
+				return new vscode.Hover("No documentation found");
+			}
+
+			return;
+		},
 	});
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(hoverProvider);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
