@@ -63,13 +63,17 @@ export function activate(context: vscode.ExtensionContext) {
 				return [];
 			}
 
-			const dartFilePath = path.join(workspaceFolder, "translation", target, `${key}.dart`);
-
-			if (!fs.existsSync(dartFilePath)) {
+			const filePath = findFileWithExtension(path.join(workspaceFolder, "translation", target), key);
+			
+			if (!filePath) {
 				return [];
 			}
 
-			const fileContent = fs.readFileSync(dartFilePath, "utf-8");
+			if (!fs.existsSync(filePath)) {
+				return [];
+			}
+
+			const fileContent = fs.readFileSync(filePath, "utf-8");
 
 			// Extract variables inside [[var]]
 			const varMatches = fileContent.match(/\[\[([a-zA-Z0-9_-]+)\]\]/g);
@@ -85,7 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
 				.filter(varName => !existingAttributes.has(varName)) // Filter out existing attributes
 				.map(varName => {
 					const item = new vscode.CompletionItem(`${varName}:`, vscode.CompletionItemKind.Variable);
-					item.documentation = new vscode.MarkdownString(`Variable from ${key}.dart`);
+					item.documentation = new vscode.MarkdownString(`Variable from ${key}.${filePath.split(".").pop()}`);
 					return item;
 				});
 
@@ -133,14 +137,12 @@ function findNearestParentKey(document: vscode.TextDocument, position: vscode.Po
 		// Check for list items (- key:)
 		const listMatch = lineText.match(/^-?\s*([a-zA-Z_-]+):\s*$/);
 		if (listMatch) {
-			console.log("found list item", listMatch[1]);
 			return listMatch[1]; // Return the key (e.g., "button")
 		}
 
 		// Check for regular keys (not in lists)
 		const match = lineText.match(/^([a-zA-Z_-]+):\s*$/);
 		if (match) {
-			console.log("found regular key", match[1]);
 			return match[1];
 		}
 
@@ -193,4 +195,16 @@ function scanLines(document: vscode.TextDocument, position: vscode.Position, cur
 
 		line += direction;
 	}
+}
+
+function findFileWithExtension(dirPath: string, baseName: string): string | null {
+	const files = fs.readdirSync(dirPath);
+	for (const file of files) {
+		const filePath = path.join(dirPath, file);
+		const fileBaseName = path.basename(file, path.extname(file));
+		if (fileBaseName === baseName) {
+			return filePath;
+		}
+	}
+	return null;
 }

@@ -1,9 +1,14 @@
 # Change Log
 
-All notable changes to the "appgenerator-docs" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [v0.0.3]
 
-## [Unreleased]
+- Bugfix: support all possible programming languages for autocomplete
 
-- Initial release
+## [v0.0.2]
+
+- Support autocomplete
+
+## [v0.0.1]
+
+- Support component documentation
