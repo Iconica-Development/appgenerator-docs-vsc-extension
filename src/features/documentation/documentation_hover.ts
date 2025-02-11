@@ -23,7 +23,7 @@ export const documentationHoverProvider = vscode.languages.registerHoverProvider
             return;
         }
 
-        const docsPath = path.join(workspaceFolder, "translation", target, "docs", `${word}.md`);
+        const docsPath = path.join(workspaceFolder, "translation", target, word, `docs.md`);
 
         if (fs.existsSync(docsPath)) {
             const markdownContent = fs.readFileSync(docsPath, "utf-8");

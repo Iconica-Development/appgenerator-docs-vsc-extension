@@ -15,13 +15,13 @@ When editing the yaml file, this extension will suggest / autocomplete variables
 <img src="https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/blob/master/assets/readme/autofill_example.png?raw=true" alt="drawing" width="400"/>
 
 ## How to use
-The docs of a component should be saved as a markdown file in the following location: `translation/{target}/docs/{component_name}.md`. The target should always be specified in the yaml file.
+The docs of a component should be saved as a markdown file in the following location: `translation/{target}/{component_name}/docs.md`. The target should always be specified in the yaml file.
 
-The docs of a button with target flutter should be saved at the location `translation/flutter/docs/button.md`.
+The docs of a button with target flutter should be saved at the location `translation/flutter/button/docs.md`.
 
 ## How to install
 
-1. Download the extension through this [link](https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/raw/refs/heads/master/releases/hydro-platform-0.0.3.vsix).
+1. Download the extension through this [link](https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/raw/refs/heads/master/releases/hydro-platform-0.0.4.vsix).
 2. Go to the Extensions view.
 3. Select Views and More Actions...
 4. Select Install from VSIX...

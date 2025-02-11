@@ -12,7 +12,6 @@ export const varsAutocompletionProvider = vscode.languages.registerCompletionIte
             return;
         }
 
-
         const lineText = document.lineAt(position).text;
 
         if (lineText.includes(":")) {
@@ -29,33 +28,43 @@ export const varsAutocompletionProvider = vscode.languages.registerCompletionIte
             return [];
         }
 
-        const filePath = findFileWithExtension(path.join(workspaceFolder, "translation", target), key);
+        const filePaths = findFilesForObject(path.join(workspaceFolder, "translation", target, key));
 
-        if (!filePath) {
+        if (filePaths.length === 0) {
             return [];
         }
 
-        if (!fs.existsSync(filePath)) {
+        let matches: string[] = [];
+
+        for (const filePath of filePaths) {
+            if (!fs.existsSync(filePath)) {
+                continue;
+            }
+            const fileContent = fs.readFileSync(filePath, "utf-8");
+
+            // Extract variables inside [[var]]
+            const varMatches = fileContent.match(/\[\[([a-zA-Z0-9_-]+)\]\]/g);
+            if (!varMatches) {
+                continue;
+            }
+
+            matches = matches.concat(varMatches);
+        }
+
+        if (matches.length === 0) {
             return [];
         }
 
-        const fileContent = fs.readFileSync(filePath, "utf-8");
-
-        // Extract variables inside [[var]]
-        const varMatches = fileContent.match(/\[\[([a-zA-Z0-9_-]+)\]\]/g);
-        if (!varMatches) {
-            return [];
-        }
+        const uniqueVars = new Set(matches.map(match => match.replace(/\[\[|\]\]/g, "")));
 
         // Extract existing attributes in the current block
         const existingAttributes = getExistingAttributes(document, position);
-        const uniqueVars = new Set(varMatches.map(match => match.replace(/\[\[|\]\]/g, "")));
 
         const completionItems = Array.from(uniqueVars)
             .filter(varName => !existingAttributes.has(varName)) // Filter out existing attributes
             .map(varName => {
                 const item = new vscode.CompletionItem(`${varName}:`, vscode.CompletionItemKind.Variable);
-                item.documentation = new vscode.MarkdownString(`Variable from ${key}.${filePath.split(".").pop()}`);
+                item.documentation = new vscode.MarkdownString(`Variable from the ${key} object`);
                 return item;
             });
 
@@ -95,16 +104,19 @@ function findNearestParentKey(document: vscode.TextDocument, position: vscode.Po
     return null;
 }
 
-function findFileWithExtension(dirPath: string, baseName: string): string | null {
+function findFilesForObject(dirPath: string): string[] {
     const files = fs.readdirSync(dirPath);
+    const matchingFiles = [];
+
     for (const file of files) {
         const filePath = path.join(dirPath, file);
         const fileBaseName = path.basename(file, path.extname(file));
-        if (fileBaseName === baseName) {
-            return filePath;
+        if (path.extname(file) !== ".md") {
+            matchingFiles.push(filePath);
         }
     }
-    return null;
+
+    return matchingFiles;
 }
 
 function getExistingAttributes(document: vscode.TextDocument, position: vscode.Position): Set<string> {
