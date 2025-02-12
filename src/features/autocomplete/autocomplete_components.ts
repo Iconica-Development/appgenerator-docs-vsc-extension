@@ -27,13 +27,16 @@ export const componentsAutocompletionProvider = vscode.languages.registerComplet
             return [];
         }
 
-        // read all the folders in the directory translation/target and add the folder names to the completion list
+        const lineHasHyphen = document.lineAt(position).text.includes("-");
+        const lastCharIsSpace = lineText[lineText.length - 1] === " ";
+        const addSpace = !lineHasHyphen || !lastCharIsSpace;
+
         const folderPath = path.join(workspaceFolder, "translation", target);
         const folderNames = fs.readdirSync(folderPath).filter(name => !name.includes("."));
         const completionItems = folderNames.map(folderName => {
             const completionItem = new vscode.CompletionItem(folderName, vscode.CompletionItemKind.Constructor);
             completionItem.detail = "Component";
-            completionItem.insertText = `- ${folderName}:\n\t`;
+            completionItem.insertText = `${lineHasHyphen ? "" : "-"}${addSpace ? " " : ""}${folderName}:\n\t`;
             return completionItem;
         });
 
