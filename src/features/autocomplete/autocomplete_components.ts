@@ -31,8 +31,9 @@ export const componentsAutocompletionProvider = vscode.languages.registerComplet
         const folderPath = path.join(workspaceFolder, "translation", target);
         const folderNames = fs.readdirSync(folderPath).filter(name => !name.includes("."));
         const completionItems = folderNames.map(folderName => {
-            const completionItem = new vscode.CompletionItem(`- ${folderName}`, vscode.CompletionItemKind.Constructor);
+            const completionItem = new vscode.CompletionItem(folderName, vscode.CompletionItemKind.Constructor);
             completionItem.detail = "Component";
+            completionItem.insertText = `- ${folderName}:\n\t`;
             return completionItem;
         });
 

@@ -44,3 +44,37 @@ export function findNearestParentKey(document: vscode.TextDocument, position: vs
 export function capitalizeFirstChar(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function getExistingAttributes(document: vscode.TextDocument, position: vscode.Position): Set<string> {
+    const existingAttributes = new Set<string>();
+    const currentIndent = document.lineAt(position).firstNonWhitespaceCharacterIndex;
+
+    // Scan lines in both directions (before and after cursor)
+    scanLines(document, position, currentIndent, existingAttributes, -1); // Scan backward
+    scanLines(document, position, currentIndent, existingAttributes, 1);  // Scan forward
+
+    return existingAttributes;
+}
+
+function scanLines(document: vscode.TextDocument, position: vscode.Position, currentIndent: number, existingAttributes: Set<string>, direction: number) {
+    const totalLines = document.lineCount;
+    let line = position.line + (direction === 1 ? 1 : 0);
+
+    while (line >= 0 && line < totalLines) {
+        const lineText = document.lineAt(line).text.trim();
+        const indent = document.lineAt(line).firstNonWhitespaceCharacterIndex;
+
+        // Stop if we hit another parent key or a list item (- key:)
+        if (indent < currentIndent && (lineText.match(/^-?\s*([a-zA-Z_-]+):\s*$/) || lineText.match(/^([a-zA-Z_-]+):\s*$/))) {
+            break;
+        }
+
+        // Match attributes (key: value)
+        const match = lineText.match(/^([a-zA-Z0-9_-]+):\s*/);
+        if (match) {
+            existingAttributes.add(match[1]);
+        }
+
+        line += direction;
+    }
+}

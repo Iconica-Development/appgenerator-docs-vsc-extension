@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 
-import { retrieveTarget, findNearestParentKey } from "../../helpers.js";
+import { retrieveTarget, findNearestParentKey, getExistingAttributes } from "../../helpers.js";
 
 export const varsAutocompletionProvider = vscode.languages.registerCompletionItemProvider("yaml", {
     async provideCompletionItems(document, position, token, context) {
@@ -82,45 +82,10 @@ function findFilesForObject(dirPath: string): string[] {
 
     for (const file of files) {
         const filePath = path.join(dirPath, file);
-        const fileBaseName = path.basename(file, path.extname(file));
         if (path.extname(file) !== ".md") {
             matchingFiles.push(filePath);
         }
     }
 
     return matchingFiles;
-}
-
-function getExistingAttributes(document: vscode.TextDocument, position: vscode.Position): Set<string> {
-    const existingAttributes = new Set<string>();
-    const currentIndent = document.lineAt(position).firstNonWhitespaceCharacterIndex;
-
-    // Scan lines in both directions (before and after cursor)
-    scanLines(document, position, currentIndent, existingAttributes, -1); // Scan backward
-    scanLines(document, position, currentIndent, existingAttributes, 1);  // Scan forward
-
-    return existingAttributes;
-}
-
-function scanLines(document: vscode.TextDocument, position: vscode.Position, currentIndent: number, existingAttributes: Set<string>, direction: number) {
-    const totalLines = document.lineCount;
-    let line = position.line + (direction === 1 ? 1 : 0);
-
-    while (line >= 0 && line < totalLines) {
-        const lineText = document.lineAt(line).text.trim();
-        const indent = document.lineAt(line).firstNonWhitespaceCharacterIndex;
-
-        // Stop if we hit another parent key or a list item (- key:)
-        if (indent < currentIndent && (lineText.match(/^-?\s*([a-zA-Z_-]+):\s*$/) || lineText.match(/^([a-zA-Z_-]+):\s*$/))) {
-            break;
-        }
-
-        // Match attributes (key: value)
-        const match = lineText.match(/^([a-zA-Z0-9_-]+):\s*/);
-        if (match) {
-            existingAttributes.add(match[1]);
-        }
-
-        line += direction;
-    }
 }
