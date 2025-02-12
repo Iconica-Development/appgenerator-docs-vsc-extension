@@ -6,6 +6,7 @@ import { componentsAutocompletionProvider } from "./features/autocomplete/autoco
 import { createComponentProvider } from "./features/component_generation/generate_component";
 import { appRootAutocompletionProvider } from "./features/autocomplete/autocomplete_app_root";
 import { targetDiagnosis } from "./features/diagnostics/target_diagnosis";
+import { indentationDiagnostics } from "./features/diagnostics/indentation_diagnostics";
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(documentationHoverProvider);
@@ -18,8 +19,15 @@ export function activate(context: vscode.ExtensionContext) {
 	const diagnosticCollection = vscode.languages.createDiagnosticCollection("hydroplatform");
 
 	context.subscriptions.push(
-		vscode.workspace.onDidOpenTextDocument(doc => targetDiagnosis(doc, diagnosticCollection)),
-		vscode.workspace.onDidChangeTextDocument(event => targetDiagnosis(event.document, diagnosticCollection))
+		vscode.workspace.onDidOpenTextDocument(doc => { 
+			
+			targetDiagnosis(doc, diagnosticCollection);
+			indentationDiagnostics(doc, diagnosticCollection);
+		}),
+		vscode.workspace.onDidChangeTextDocument(event => {
+			targetDiagnosis(event.document, diagnosticCollection);
+			indentationDiagnostics(event.document, diagnosticCollection);
+		})
 	);
 
 	context.subscriptions.push(diagnosticCollection);
