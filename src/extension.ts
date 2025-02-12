@@ -7,6 +7,7 @@ import { createComponentProvider } from "./features/component_generation/generat
 import { appRootAutocompletionProvider } from "./features/autocomplete/autocomplete_app_root";
 import { targetDiagnosis } from "./features/diagnostics/target_diagnosis";
 import { indentationDiagnostics } from "./features/diagnostics/indentation_diagnostics";
+import { attributeDiagnostics } from "./features/diagnostics/attribute_diagnostics";
 
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(documentationHoverProvider);
@@ -23,10 +24,12 @@ export function activate(context: vscode.ExtensionContext) {
 			
 			targetDiagnosis(doc, diagnosticCollection);
 			indentationDiagnostics(doc, diagnosticCollection);
+			attributeDiagnostics(doc, diagnosticCollection);
 		}),
 		vscode.workspace.onDidChangeTextDocument(event => {
 			targetDiagnosis(event.document, diagnosticCollection);
 			indentationDiagnostics(event.document, diagnosticCollection);
+			attributeDiagnostics(event.document, diagnosticCollection);
 		})
 	);
 
