@@ -1,6 +1,10 @@
 # Change Log
 
 
+## [v0.0.5]
+
+- Feat: add autocomplete for classes
+
 ## [v0.0.4]
 
 - Feat: add support for multi file components

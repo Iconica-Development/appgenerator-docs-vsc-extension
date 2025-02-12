@@ -3,7 +3,7 @@
   "displayName": "Hydro Platform",
   "publisher": "Iconica Development",
   "description": "",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/Iconica-Development/appgenerator-docs-vsc-extension.git"

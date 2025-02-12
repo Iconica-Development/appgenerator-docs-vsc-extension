@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 
-import { retrieveTarget } from "../../helpers.js";
+import { retrieveTarget, findNearestParentKey } from "../../helpers.js";
 
 export const varsAutocompletionProvider = vscode.languages.registerCompletionItemProvider("yaml", {
     async provideCompletionItems(document, position, token, context) {
@@ -74,35 +74,7 @@ export const varsAutocompletionProvider = vscode.languages.registerCompletionIte
     ...Array.from("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 );
 
-function findNearestParentKey(document: vscode.TextDocument, position: vscode.Position): string | null {
-    let currentIndent = document.lineAt(position).firstNonWhitespaceCharacterIndex;
 
-    for (let line = position.line - 1; line >= 0; line--) {
-        const lineText = document.lineAt(line).text.trim();
-        const indent = document.lineAt(line).firstNonWhitespaceCharacterIndex;
-
-        // Ignore lines that are indented deeper (nested items)
-        if (indent >= currentIndent) {
-            continue;
-        }
-
-        // Check for list items (- key:)
-        const listMatch = lineText.match(/^-?\s*([a-zA-Z_-]+):\s*$/);
-        if (listMatch) {
-            return listMatch[1]; // Return the key (e.g., "button")
-        }
-
-        // Check for regular keys (not in lists)
-        const match = lineText.match(/^([a-zA-Z_-]+):\s*$/);
-        if (match) {
-            return match[1];
-        }
-
-        currentIndent = indent;
-    }
-
-    return null;
-}
 
 function findFilesForObject(dirPath: string): string[] {
     const files = fs.readdirSync(dirPath);
