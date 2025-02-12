@@ -3,7 +3,7 @@
   "displayName": "Hydro Platform",
   "publisher": "Iconica Development",
   "description": "",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/Iconica-Development/appgenerator-docs-vsc-extension.git"
@@ -21,7 +21,12 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "extension.createComponent",
+        "title": "Create Hydro Platform Component"
+      }
+    ],
     "languages": [
       {
         "id": "yaml",

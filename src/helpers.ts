@@ -40,3 +40,7 @@ export function findNearestParentKey(document: vscode.TextDocument, position: vs
 
     return null;
 }
+
+export function capitalizeFirstChar(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}

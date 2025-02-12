@@ -1,6 +1,10 @@
 # Change Log
 
 
+## [v0.0.6]
+
+- Feat: add component template creation
+
 ## [v0.0.5]
 
 - Feat: add autocomplete for classes

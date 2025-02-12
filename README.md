@@ -14,6 +14,9 @@ When editing the yaml file, this extension will suggest / autocomplete variables
 <br/>
 <img src="https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/blob/master/assets/readme/autofill_example.png?raw=true" alt="drawing" width="400"/>
 
+### Component template creation
+The command `Create Hydro Platform Component` will let the user create a new component for the platform. The user should provide the name and platform after which the template files for the given platform will be created. 
+
 ## How to use
 The docs of a component should be saved as a markdown file in the following location: `translation/{target}/{component_name}/docs.md`. The target should always be specified in the yaml file.
 
@@ -21,7 +24,7 @@ The docs of a button with target flutter should be saved at the location `transl
 
 ## How to install
 
-1. Download the extension through this [link](https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/raw/refs/heads/master/releases/hydro-platform-0.0.5.vsix).
+1. Download the extension through this [link](https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/raw/refs/heads/master/releases/hydro-platform-0.0.6.vsix).
 2. Go to the Extensions view.
 3. Select Views and More Actions...
 4. Select Install from VSIX...
