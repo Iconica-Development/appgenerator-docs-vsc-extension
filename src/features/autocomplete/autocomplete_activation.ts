@@ -13,7 +13,6 @@ export const textChangeListener = vscode.workspace.onDidChangeTextDocument(event
     const position = editor.selection.active;
     const lineText = editor.document.lineAt(position).text;
 
-    // Check if the line already contains a colon
     if ((lineText.trim() !== "" && !lineText.includes(":")) || triggerForExemptedKey(lineText.trim())) {
         vscode.commands.executeCommand("editor.action.triggerSuggest");
     }

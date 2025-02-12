@@ -1,4 +1,6 @@
 import * as vscode from "vscode";
+import * as fs from "fs";
+import * as path from "path";
 
 export function retrieveTarget(document: vscode.TextDocument): string | null {
     const text = document.getText();
@@ -56,6 +58,16 @@ export function getExistingAttributes(document: vscode.TextDocument, position: v
     return existingAttributes;
 }
 
+export function getExistingAttributesForParent(document: vscode.TextDocument, parentLine: number): Set<string> {
+    const existingAttributes = new Set<string>();
+    const currentIndent = document.lineAt(parentLine).firstNonWhitespaceCharacterIndex;
+
+    // scan lines after the parent line
+    scanLines(document, new vscode.Position(parentLine, 0), currentIndent, existingAttributes, 1);
+
+    return existingAttributes;
+}
+
 function scanLines(document: vscode.TextDocument, position: vscode.Position, currentIndent: number, existingAttributes: Set<string>, direction: number) {
     const totalLines = document.lineCount;
     let line = position.line + (direction === 1 ? 1 : 0);
@@ -77,4 +89,18 @@ function scanLines(document: vscode.TextDocument, position: vscode.Position, cur
 
         line += direction;
     }
+}
+
+export function getSupportedTargets() {
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!workspaceFolder) {
+        return;
+    }
+
+    const translationFolder = path.join(workspaceFolder, "translation");
+    if (!fs.existsSync(translationFolder)) {
+        return;
+    }
+
+    return fs.readdirSync(translationFolder).filter(name => !name.includes("."));
 }

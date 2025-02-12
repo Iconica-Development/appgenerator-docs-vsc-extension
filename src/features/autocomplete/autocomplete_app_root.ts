@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
+import { getSupportedTargets } from "../../helpers.js";
 
 import { findNearestParentKey, getExistingAttributes } from "../../helpers.js";
 
@@ -53,24 +52,16 @@ function autoCompleteTarget(document: vscode.TextDocument, position: vscode.Posi
         return;
     }
 
-    // check if the current line is the target line
     const lineText = document.lineAt(position).text;
     if (!lineText.includes("target:")) {
         return;
     }
 
-    // get all the targets from the translation folder
-    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-    if (!workspaceFolder) {
+    const targets = getSupportedTargets();
+
+    if (!targets) {
         return;
     }
-
-    const translationFolder = path.join(workspaceFolder, "translation");
-    if (!fs.existsSync(translationFolder)) {
-        return;
-    }
-
-    const targets = fs.readdirSync(translationFolder).filter(name => !name.includes("."));
 
     targets.forEach(target => {
         const completionItem = new vscode.CompletionItem(target, vscode.CompletionItemKind.Value);

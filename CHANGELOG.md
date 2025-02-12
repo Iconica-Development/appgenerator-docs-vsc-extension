@@ -1,6 +1,11 @@
 # Change Log
 
 
+## [v0.0.7]
+
+- Feat: add diagnostics for when app or target isn't provided
+- Feat: add autofill for the attributes of app
+
 ## [v0.0.6]
 
 - Feat: add component template creation
