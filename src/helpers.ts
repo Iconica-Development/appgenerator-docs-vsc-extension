@@ -104,3 +104,21 @@ export function getSupportedTargets() {
 
     return fs.readdirSync(translationFolder).filter(name => !name.includes("."));
 }
+
+export function getComponentDocumentation(component: string, target: string) {
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!workspaceFolder) {
+        return;
+    }
+
+    const docsPath = path.join(workspaceFolder, "translation", target, component, `docs.md`);
+
+    if (fs.existsSync(docsPath)) {
+        const markdownContent = fs.readFileSync(docsPath, "utf-8");
+        const markdown = new vscode.MarkdownString(markdownContent);
+        markdown.isTrusted = true;
+        return markdown;
+    } else {
+        return new vscode.MarkdownString("No documentation found");
+    }
+}

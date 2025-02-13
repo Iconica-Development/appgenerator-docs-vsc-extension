@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 
-import { retrieveTarget, findNearestParentKey } from "../../helpers.js";
+import { retrieveTarget, findNearestParentKey, getComponentDocumentation } from "../../helpers.js";
 
 export const componentsAutocompletionProvider = vscode.languages.registerCompletionItemProvider("yaml", {
     async provideCompletionItems(document, position, token, context) {
@@ -37,6 +37,7 @@ export const componentsAutocompletionProvider = vscode.languages.registerComplet
             const completionItem = new vscode.CompletionItem(folderName, vscode.CompletionItemKind.Constructor);
             completionItem.detail = "Component";
             completionItem.insertText = `${lineHasHyphen ? "" : "-"}${addSpace ? " " : ""}${folderName}:\n\t`;
+            completionItem.documentation = getComponentDocumentation(folderName, target);
             return completionItem;
         });
 
