@@ -24,7 +24,7 @@ The docs of a button with target flutter should be saved at the location `transl
 
 ## How to install
 
-1. Download the extension through this [link](https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/raw/refs/heads/master/releases/hydro-platform-0.0.7.vsix).
+1. Download the extension through this [link](https://github.com/Iconica-Development/appgenerator-docs-vsc-extension/raw/refs/heads/master/releases/hydro-platform-0.0.8.vsix).
 2. Go to the Extensions view.
 3. Select Views and More Actions...
 4. Select Install from VSIX...

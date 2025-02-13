@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.0.8]
+
+- Feat: add documentation to components in the autofill container
 
 ## [v0.0.7]
 
