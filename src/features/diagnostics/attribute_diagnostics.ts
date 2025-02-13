@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 import { getExistingAttributesForParent, getSupportedTargets } from '../../helpers';
 
-export function attributeDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
+export function attributeDiagnostics(document: vscode.TextDocument) {
     const diagnostics: vscode.Diagnostic[] = [];
 
     checkIfObjectHasChildren(document, diagnostics);
 
-    collection.set(document.uri, diagnostics);
+    return diagnostics;
 }
 
 function checkIfObjectHasChildren(document: vscode.TextDocument, diagnostics: vscode.Diagnostic[]) {

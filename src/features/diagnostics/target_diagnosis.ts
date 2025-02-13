@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { getExistingAttributesForParent, getSupportedTargets } from '../../helpers';
 
-export function targetDiagnosis(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
+export function targetDiagnosis(document: vscode.TextDocument) {
     const text = document.getText();
     const diagnostics: vscode.Diagnostic[] = [];
 
@@ -14,7 +14,6 @@ export function targetDiagnosis(document: vscode.TextDocument, collection: vscod
             `The document should start with "app"`,
             vscode.DiagnosticSeverity.Error
         );
-
         diagnostics.push(diagnostic);
     }
 
@@ -47,6 +46,5 @@ export function targetDiagnosis(document: vscode.TextDocument, collection: vscod
             diagnostics.push(diagnostic);
         }
     }
-
-    collection.set(document.uri, diagnostics);
+    return diagnostics;
 }

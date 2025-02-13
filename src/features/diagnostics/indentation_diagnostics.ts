@@ -1,14 +1,16 @@
 import * as vscode from 'vscode';
 
-export function indentationDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
+export function indentationDiagnostics(document: vscode.TextDocument) {
     const diagnostics: vscode.Diagnostic[] = [];
 
     checkAppRootIndentation(document, diagnostics);
 
-    collection.set(document.uri, diagnostics);
+
+    return diagnostics;
 }
 
 function checkAppRootIndentation(document: vscode.TextDocument, diagnostics: vscode.Diagnostic[]) {
+    console.log("checking indentation");
     const text = document.getText();
     const regex = /^[^\s]/gm;
     let match;
@@ -36,5 +38,14 @@ function checkAppRootIndentation(document: vscode.TextDocument, diagnostics: vsc
             );
             diagnostics.push(diagnostic);
         });
+    } else if (foundLines.length === 1) {
+        if (!foundLines[0].text.includes("app")) {
+            const diagnostic = new vscode.Diagnostic(
+                foundLines[0].range,
+                `Only "app" should be the root key`,
+                vscode.DiagnosticSeverity.Error
+            );
+            diagnostics.push(diagnostic);
+        }
     }
 }

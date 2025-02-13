@@ -20,20 +20,25 @@ export function activate(context: vscode.ExtensionContext) {
 	const diagnosticCollection = vscode.languages.createDiagnosticCollection("hydroplatform");
 
 	context.subscriptions.push(
-		vscode.workspace.onDidOpenTextDocument(doc => { 
-			
-			targetDiagnosis(doc, diagnosticCollection);
-			indentationDiagnostics(doc, diagnosticCollection);
-			attributeDiagnostics(doc, diagnosticCollection);
+		vscode.workspace.onDidOpenTextDocument(doc => {
+			updateDiagnostics(doc, diagnosticCollection);
 		}),
 		vscode.workspace.onDidChangeTextDocument(event => {
-			targetDiagnosis(event.document, diagnosticCollection);
-			indentationDiagnostics(event.document, diagnosticCollection);
-			attributeDiagnostics(event.document, diagnosticCollection);
+			updateDiagnostics(event.document, diagnosticCollection);
 		})
 	);
 
 	context.subscriptions.push(diagnosticCollection);
+}
+
+function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
+	const diagnostics: vscode.Diagnostic[] = [];
+
+	diagnostics.push(...attributeDiagnostics(document));
+	diagnostics.push(...targetDiagnosis(document));
+	diagnostics.push(...indentationDiagnostics(document));
+
+	collection.set(document.uri, diagnostics);
 }
 
 export function deactivate() { }
