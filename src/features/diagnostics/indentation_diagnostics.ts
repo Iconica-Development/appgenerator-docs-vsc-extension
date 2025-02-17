@@ -10,7 +10,6 @@ export function indentationDiagnostics(document: vscode.TextDocument) {
 }
 
 function checkAppRootIndentation(document: vscode.TextDocument, diagnostics: vscode.Diagnostic[]) {
-    console.log("checking indentation");
     const text = document.getText();
     const regex = /^[^\s]/gm;
     let match;

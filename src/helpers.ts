@@ -133,3 +133,67 @@ export function getTargetFromYaml(yamlString: string): string | null {
         return null;
     }
 }
+
+export function getComponentsForTarget(component: string) {
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!workspaceFolder) {
+        return;
+    }
+
+    const componentPath = path.join(workspaceFolder, "translation", component);
+    const componentFolders = fs.readdirSync(componentPath).filter(name => !name.includes("."));
+    return componentFolders;
+
+}
+
+export function getVariablesForComponent(component: string, target: string) {
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!workspaceFolder) {
+        return [];
+    }
+
+    const filePaths = findFilesForObject(path.join(workspaceFolder, "translation", target, component));
+
+    if (filePaths.length === 0) {
+        return [];
+    }
+
+    let matches: string[] = [];
+
+    for (const filePath of filePaths) {
+        if (!fs.existsSync(filePath)) {
+            continue;
+        }
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+
+        // Extract variables inside [[var]]
+        const varMatches = fileContent.match(/\[\[([a-zA-Z0-9_-]+)\]\]/g);
+        if (!varMatches) {
+            continue;
+        }
+
+        matches = matches.concat(varMatches);
+    }
+
+    if (matches.length === 0) {
+        return [];
+    }
+
+    const uniqueVars = new Set(matches.map(match => match.replace(/\[\[|\]\]/g, "")));
+
+    return Array.from(uniqueVars);
+}
+
+function findFilesForObject(dirPath: string): string[] {
+    const files = fs.readdirSync(dirPath);
+    const matchingFiles = [];
+
+    for (const file of files) {
+        const filePath = path.join(dirPath, file);
+        if (path.extname(file) !== ".md") {
+            matchingFiles.push(filePath);
+        }
+    }
+
+    return matchingFiles;
+}

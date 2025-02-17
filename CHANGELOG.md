@@ -1,5 +1,10 @@
 # Change Log
 
+## [v1.0.0]
+- Added functionality that can generate schema.json files per component.
+- Added functionality that can generate schema.json files for all components of a given target that don't have one yet.
+- Added a watcher on schema.json files that will trigger a regeneration of the schema when changes are made in the file or when the file is created or deleted.
+
 ## [v0.0.9]
 
 - Add yaml schema generation for yaml diagnostics and autofill.

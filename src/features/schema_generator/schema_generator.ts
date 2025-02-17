@@ -3,6 +3,8 @@ import * as path from "path";
 import * as fs from "fs";
 import { getSupportedTargets, getTargetFromYaml } from "../../helpers";
 
+let debounceTimeout: NodeJS.Timeout | undefined;
+
 export function updateSchemaOnTargetChange(context: vscode.ExtensionContext) {
     const watcher = vscode.workspace.createFileSystemWatcher("**/*.hydro.{yaml,yml}");
 
@@ -12,6 +14,35 @@ export function updateSchemaOnTargetChange(context: vscode.ExtensionContext) {
 
     return watcher;
 }
+
+export function updateSchemaOnComponentSchemaChange(context: vscode.ExtensionContext) {
+    const watcher = vscode.workspace.createFileSystemWatcher("**/schema.json");
+
+    function resetTimeout(timeOut : number) {
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
+        }
+        debounceTimeout = setTimeout(() => {
+            handleSchemaGeneration(context, true);
+        }, timeOut);
+    }
+
+    watcher.onDidChange((uri) => {
+        resetTimeout(5000);
+    });
+
+    watcher.onDidCreate((uri) => {
+        resetTimeout(500);
+    });
+
+    watcher.onDidDelete((uri) => {
+        resetTimeout(500);
+    });
+
+    return watcher;
+}
+
+
 
 
 export function schemaGeneratorProvider(context: vscode.ExtensionContext) {
@@ -24,12 +55,12 @@ async function handleSchemaRegeneration(context: vscode.ExtensionContext, uri: v
     try {
         const document = await vscode.workspace.openTextDocument(uri);
         const yamlContent = document.getText();
-        
+
         const allowedTargets = getSupportedTargets();
         if (!allowedTargets) {
             return;
         }
-        
+
         const target = getTargetFromYaml(yamlContent);
         const storagePath = path.join(context.globalStorageUri.fsPath, "last_target.json");
 
@@ -50,7 +81,6 @@ async function handleSchemaRegeneration(context: vscode.ExtensionContext, uri: v
 }
 
 export async function handleSchemaGeneration(context: vscode.ExtensionContext, showGenerationMessage: boolean = false, target?: string) {
-    console.log("Generating schema for target:", target);
     const timestamp = new Date().toISOString();
     const schemaPath = path.join(context.globalStorageUri.fsPath, `hydroplatform_yaml_schema_${timestamp}.json`);
 
@@ -82,7 +112,7 @@ export async function handleSchemaGeneration(context: vscode.ExtensionContext, s
     };
 
 
-    const components = getComponentSchemas(target ?? "flutter");
+    const components = getComponentSchemas(target ?? getLastTarget(context) ?? "flutter");
 
     for (const [key, value] of components) {
         schema["$definitions"][key] = value;
@@ -103,9 +133,8 @@ export async function handleSchemaGeneration(context: vscode.ExtensionContext, s
 
     for (const schemaUri of Object.keys(schemas)) {
         if (schemaUri.includes("hydroplatform_yaml_schema")) {
-            console.log("Deleting schema:", schemaUri);
             try {
-            delete schemas[schemaUri];
+                delete schemas[schemaUri];
             } catch (error) {
                 // ignore
             }

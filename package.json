@@ -3,7 +3,7 @@
   "displayName": "Hydro Platform",
   "publisher": "Iconica Development",
   "description": "",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Iconica-Development/appgenerator-docs-vsc-extension.git"
@@ -29,6 +29,14 @@
       {
         "command": "yamlSchema.generateSchema",
         "title": "Hydro Platform: Generate YAML Schema"
+      },
+      {
+        "command": "yamlSchema.generateSchemaForComponent",
+        "title": "Hydro Platform: Generate schema.json for a component"
+      },
+      {
+        "command": "yamlSchema.generateSchemaForAllComponents",
+        "title": "Hydro Platform: Generate schema.json for all components of a chosen target"
       }
     ],
     "languages": [
