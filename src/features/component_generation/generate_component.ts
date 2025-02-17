@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
+import { handleSchemaGeneration, getLastTarget } from "../schema_generator/schema_generator";
 import { capitalizeFirstChar } from "../../helpers";
 
 const supportedTargets = ["react", "flutter"] as const;
@@ -23,6 +24,7 @@ export function createComponentProvider(context: vscode.ExtensionContext) {
         }
 
         createDirectoryAndFiles(componentPath, componentName, target, context);
+        handleSchemaGeneration(context, true, getLastTarget(context));
     });
 }
 
@@ -99,4 +101,9 @@ function createDocumentation(componentPath: vscode.Uri, componentName: string, c
     let docsTemplate = fs.readFileSync(path.join(context.extensionPath, 'assets/templates/docs.md'), 'utf8');
     docsTemplate = docsTemplate.replace(/component_name/g, capitalizeFirstChar(componentName));
     fs.writeFileSync(docsPath, docsTemplate);
+
+    const schemaDocsPath = `${componentPath.fsPath}/schema.json`;
+    let schemaDocsTemplate = fs.readFileSync(path.join(context.extensionPath, 'assets/templates/schema.json'), 'utf8');
+    schemaDocsTemplate = schemaDocsTemplate.replace(/\$\$_component_name_\$\$/g, componentName.toLowerCase());
+    fs.writeFileSync(schemaDocsPath, schemaDocsTemplate);
 }

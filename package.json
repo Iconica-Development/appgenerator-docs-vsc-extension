@@ -3,7 +3,7 @@
   "displayName": "Hydro Platform",
   "publisher": "Iconica Development",
   "description": "",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "repository": {
     "type": "git",
     "url": "https://github.com/Iconica-Development/appgenerator-docs-vsc-extension.git"
@@ -24,7 +24,11 @@
     "commands": [
       {
         "command": "extension.createComponent",
-        "title": "Create Hydro Platform Component"
+        "title": "Hydro Platform: Create Component"
+      },
+      {
+        "command": "yamlSchema.generateSchema",
+        "title": "Hydro Platform: Generate YAML Schema"
       }
     ],
     "languages": [
@@ -37,6 +41,9 @@
       }
     ]
   },
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
+  ],
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
@@ -46,14 +53,18 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.97.0",
+    "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
+    "@types/vscode": "^1.97.0",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
-    "eslint": "^9.19.0",
-    "typescript": "^5.7.3",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.19.0",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
   }
 }

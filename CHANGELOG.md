@@ -1,5 +1,10 @@
 # Change Log
 
+## [v0.0.9]
+
+- Add yaml schema generation for yaml diagnostics and autofill.
+- Removed all diagnostics and autofill features that were previously supported in the extension.
+
 ## [v0.0.8]
 
 - Feat: add documentation to components in the autofill container

@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
+import * as jsYaml from "js-yaml";
 
 export function retrieveTarget(document: vscode.TextDocument): string | null {
     const text = document.getText();
@@ -28,7 +29,7 @@ export function findNearestParentKey(document: vscode.TextDocument, position: vs
         // Check for list items (- key:)
         const listMatch = lineText.match(/^-?\s*([a-zA-Z_-]+):\s*$/);
         if (listMatch) {
-            return listMatch[1]; // Return the key (e.g., "button")
+            return listMatch[1];
         }
 
         // Check for regular keys (not in lists)
@@ -120,5 +121,15 @@ export function getComponentDocumentation(component: string, target: string) {
         return markdown;
     } else {
         return new vscode.MarkdownString("No documentation found");
+    }
+}
+
+export function getTargetFromYaml(yamlString: string): string | null {
+    try {
+        const yaml: any = jsYaml.load(yamlString);
+        return yaml?.app?.target;
+    } catch (error) {
+        console.error("Error parsing YAML:", error);
+        return null;
     }
 }

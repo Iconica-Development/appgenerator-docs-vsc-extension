@@ -1,0 +1,19 @@
+{
+    "$$_component_name_$$": {
+        "type": "object",
+        "properties": {
+            "$$_component_name_$$": {
+                "type": "object",
+                "properties": {
+                    
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        "required": [
+            "$$_component_name_$$"
+        ],
+        "additionalProperties": false
+    }
+}
